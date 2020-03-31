@@ -30,22 +30,35 @@ class NewVisitorTest(unittest.TestCase):
         inputbox.send_keys('Buy peacock feathers')
         #Hit enter, page update, page lists
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
+        time.sleep(3)
         table = self.browser.find_element_by_id('id_list_table')
         rows = table.find_elements_by_tag_name('tr')
-        self.assertTrue(any(row.text == '1. Buy peacock feathers' for row in rows), "New to-do item did not appear in table")
+
         #"1. Buy peacock feathers" as an item in a to-do list
-        
+        #new way of checking to-do table contents:
+        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+        #old way of checking to-do table contents:
+        #self.assertTrue(any(row.text == '1. Buy peacock feathers' for row in rows), f"New to-do ite$
+
         #Still a text box inviting to add another item
-        self.fail('Finish the test!')
-
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(inputbox.get_attribute('placeholder'), 'Enter a to-do item')
         # Enter "Use peacock feathers to make a fly"
+        inputbox.send_keys('Use peacock feathers to make a fly')
+        #Hit enter, page update, page lists
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(3)
 
-        #Hit enter, page update page lists both items
+        # The page updates again, and now shows both items on her list
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        self.assertIn('1: Buy peacock feathers', [row.text for row in rows])
+        self.assertIn('2: Use peacock feathers to make a fly', [row.text for row in rows])
 
         #Unique URL generated
 
         #Visit URL, to-do list is there and same
+        self.fail('Finish the test!')
 
         self.browser.quit()
 
